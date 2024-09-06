@@ -14,7 +14,7 @@ Add your WiFi SSID and password in the `server_esp32/main/wifi.h`
 Build and flash the server firmware for the ESP32
 ```bash
 cd server_esp32/
-idf.py flash monitor
+idf.py flash
 ```     
 Build the client
 ```bash
@@ -34,7 +34,6 @@ The ESP32's IP Address can be obtained from the debug info
 ```
 I (10748) esp_netif_handlers: sta ip: 192.168.100.62, mask: 255.255.255.0, gw: 192.168.100.1
 I (10748) wifi station: got ip:192.168.100.62
-
 ```
 Start another terminal session to run the client
 ```bash
@@ -53,14 +52,13 @@ Server: ls
 
 You: test
 Server: test
-
-```
+```     
 
 ## Screenshots
 
 ![Server & Client Program Running][ss-1]
 
-[ss-1]:https://i.imgur.com/8hUXGd7.png "INTRO"
+[ss-1]:https://i.imgur.com/7ipcBVq.png "INTRO"
 
 
 ## References
