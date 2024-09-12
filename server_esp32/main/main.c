@@ -1,8 +1,3 @@
-
-/**********************************************************************************************
- * Core 1 is reserved for wifi functionality
- * Core 0 is running the app_main and used to setup peripherals.
-***********************************************************************************************/
 #include "wifi.h"
 #include <math.h>
 
@@ -45,10 +40,20 @@ void udp_server_task(){
     // Simple echo server
     while(1){
         recvfrom(sock, rx_buffer, sizeof(rx_buffer), 0,(struct sockaddr *)&source_addr, &socklen);
+        
+        // Shut down the server if an empty string is sent from the client
+        if(rx_buffer[0]== '\0'){
+            ESP_LOGI(TAG,"Shutting down echo server");
+            shutdown(sock, SHUT_RDWR);
+            break;
+        }
+        
         ESP_LOGI(TAG, "%s", rx_buffer);
         sendto(sock, rx_buffer, sizeof(rx_buffer), 0, (struct sockaddr *)&source_addr, sizeof(source_addr));
         memset(rx_buffer,0,sizeof(rx_buffer));
     }
+    // Delete the task
+    vTaskDelete(NULL);
 
 
 }
@@ -58,5 +63,6 @@ void app_main(void)
     // Initialize wifi
     wifi_init_sta();
 
+    // Create the udp server task
     xTaskCreate(udp_server_task, "udp_server", 4096, NULL, 5, NULL);
 }

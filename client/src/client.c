@@ -5,12 +5,25 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <string.h>
+#include <signal.h>
+
+int sock;
+struct sockaddr_in dest_addr;
+char tx_buffer[128] = {0};
+char address[20] ={0};
+
+void exit_program(int sig){
+    printf("Shutting Down Socket");
+    tx_buffer[0] = '\0';
+    sendto(sock, tx_buffer, sizeof(tx_buffer), 0, (struct sockaddr*)&dest_addr, sizeof(dest_addr));
+    shutdown(sock, SHUT_RDWR);
+    exit(0);
+}
 
 int main() {
-    int sock;
-    struct sockaddr_in dest_addr;
-    char tx_buffer[128] = "Hello";
-    char address[20] ={0};
+
+    signal(SIGINT, exit_program);
+
     uint16_t port;
     
     // Initialize the socket
